@@ -1,0 +1,7 @@
+{
+    "manifest_version": 3,
+    "name": "MHacks2025",
+    "version": 0.1,
+    "description": "Allows users to rebuild highlighted text into a more prompt engineered input for LLMs",
+    "icons": "<insert icon here>"
+}

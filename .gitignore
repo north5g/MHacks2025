@@ -6,8 +6,8 @@
 # not add to version control.
 
 # Local environment variables
-# .env
-# .env.*
+.env
+.env.*
 
 # API keys or credentials
 *.key
@@ -85,3 +85,4 @@ files_for_autograder_io/
 # Google Drive and Dropbox
 Icon
 .dropbox*
+.env
