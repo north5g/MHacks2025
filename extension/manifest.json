@@ -1,8 +1,20 @@
 {
-    "manifest_version": 3,
-    "name": "MHacks2025",
-    "version": 0.1,
-    "description": "Allows users to rebuild highlighted text into a more prompt engineered input for LLMs",
-    "icons": "<insert icon here>",
-    "permissions": ["contextMenus", "activeTab", "scripting", "storage", "notifications"]
+  "manifest_version": 3,
+  "name": "AI Rewrite",
+  "version": 0.1,
+  "description": "Automatic prompt engineering and analysis for AI tasks.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting",
+    "activeTab",
+    "notifications"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {
+    "default_popup": "preview.html"
+  },
+  "options_page": "options.html"
 }
