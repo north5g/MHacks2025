@@ -5,6 +5,9 @@
 # A .gitignore file will tell git which files and directories to ignore and
 # not add to version control.
 
+# # Backend
+# /backend
+
 # Local environment variables
 .env
 .env.*

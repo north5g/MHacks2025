@@ -1,0 +1,4 @@
+flask
+uvicorn[standard]
+python-dotenv
+google-generativeai
