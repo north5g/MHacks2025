@@ -7,7 +7,6 @@ const OPTIONS = [
   { id: "settings", title: "Settings" },
 ];
 
-const MENU_ROOT = "menu_root";
 const DEFAULT_ENDPOINT = "http://127.0.0.1:8000/rewrite"; // FastAPI endpoint
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -47,10 +46,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // Three states : pasting in 
     switch (target) {
       case "build_prompt":
-        console.log(rewritten)
-        navigator.clipboard.writeText(rewritten).then(() => {
-          helper.notify("Success!", "Prompt copied to clipboard.");
-        });
+        await chrome.storage.local.set({ lastRewritten: rewritten });
+        await helper.notify("Success!", "Prompt saved.");
         break;
       case "prompt_gpt":
         helper.pasteChatGpt(rewritten);

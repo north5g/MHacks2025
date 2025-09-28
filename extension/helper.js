@@ -2,18 +2,23 @@ const FALLBACK_ENDPOINT = "http://127.0.0.1:8000/rewrite";
 
 export async function callBackend(text, preset) {
   const { endpoint } = await chrome.storage.sync.get({ endpoint: FALLBACK_ENDPOINT });
-  const res = await fetch (endpoint, {
+
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, style: preset }) // matches FastAPI RewriteReq parameters
+    body: JSON.stringify({ text, style: preset })
   });
-  if (!res.ok){
+
+  if (!res.ok) {
     const msg = await res.text().catch(() => String(res.status));
     throw new Error(`Backend ${res.status}: ${msg}`);
   }
-  const json = await res.json();
-  return json.rewritten;
+
+  const { rewritten } = await res.json();
+  if (!rewritten) throw new Error("Backend response missing `rewritten` field");
+  return rewritten;
 }
+
 
 export function notify(title, message) {
   return new Promise((resolve) => {

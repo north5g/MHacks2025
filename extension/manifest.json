@@ -20,5 +20,10 @@
   "background": {
     "service_worker": "service.js",
     "type": "module"
-  }
+  },
+  "action": {
+    "default_popup": "frontend/popup.html"
+  },
+  "options_page": "frontend/settings.html"
+
 }
