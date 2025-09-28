@@ -55,6 +55,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       case "build_prompt":
         await chrome.storage.local.set({ lastRewritten: rewritten });
         await helper.notify("Success!", "Prompt saved.");
+
+        chrome.windows.create({
+          url: chrome.runtime.getURL("frontend/popup.html"),
+          type: "popup",
+          width: 600,
+          height: 800,
+          focused: true
+        });
+
+
         break;
       case "prompt_gpt":
         console.log("Pasting to ChatGPT:", rewritten);

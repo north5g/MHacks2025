@@ -14,7 +14,7 @@
   --response-not-selected-hover-color: var(--response-selected-color);
   --response-selected-hover-color: #4a69d1;
   --button-enabled-color: var(--color-tertiary);
-  --button-hover-color: #1B263B;
+  --button-hover-color: #324e83;
   --button-disabled-color: #2c3750;
 }
 
@@ -77,7 +77,7 @@ body {
   border-radius: var(--rounded-corner-radius);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.15s ease-in-out;
 }
 
 /* Choice buttons */
@@ -89,6 +89,7 @@ body {
 
 .choice-btn:hover {
   border-color: var(--response-not-selected-hover-color);
+  transform: scale(0.95); /* shrink slightly on hover */
 }
 
 .choice-btn.active {
@@ -100,12 +101,13 @@ body {
 .choice-btn.active:hover {
   background-color: var(--response-selected-hover-color);
   border-color: var(--response-selected-hover-color);
+  transform: scale(0.95); /* shrink slightly on hover */
 }
 
- .bottom-buttons button:enabled:hover {
+.bottom-buttons button:enabled:hover {
   color: #ffffff; 
- }
-
+  transform: scale(0.95); /* shrink slightly on hover */
+}
 
 /* Bottom buttons (enabled) */
 .bottom-buttons button {
@@ -162,5 +164,5 @@ body {
 }
 
 .tag .remove-tag:hover {
-  color: #ffffff; /* brighten on hover */
+  color: #ffffff; /* brighten a smigdge on hover */
 }
