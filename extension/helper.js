@@ -550,3 +550,206 @@ export function insertIntoClaude(text) {
     setTimeout(() => insertIntoClaude(text), 2000);
   }
 }
+
+export function pasteFetch(text) {
+  console.log("pasteFetchAI called with text:", text);
+
+  // Try the most likely Fetch AI chat URLs first (you can change/add if needed)
+  const fetchUrls = [
+    "https://chat.fetch.ai/",
+    "https://app.fetch.ai/",
+    "https://www.fetch.ai/chat",
+    "https://www.fetch.ai/"
+  ];
+
+  // Open the first URL (you can choose logic to pick different one)
+  chrome.tabs.create(
+    {
+      url: fetchUrls[0],
+      active: true
+    },
+    (newTab) => {
+      console.log("FetchAI tab created:", newTab.id);
+
+      // Wait for the tab to finish loading before injecting the script
+      chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+        console.log("FetchAI tab update:", tabId, info.status);
+
+        if (tabId === newTab.id && info.status === 'complete') {
+          chrome.tabs.onUpdated.removeListener(listener);
+          console.log("FetchAI tab loaded, injecting script in 1 second...");
+
+          // Small additional delay to ensure components are mounted
+          setTimeout(() => {
+            console.log("Executing script to insert text into FetchAI");
+            chrome.scripting.executeScript({
+              target: { tabId: newTab.id },
+              func: insertIntoFetchAI,
+              args: [text]
+            }).then(() => {
+              console.log("FetchAI script execution completed");
+            }).catch((err) => {
+              console.error("FetchAI script execution failed:", err);
+            });
+          }, 1000);
+        }
+      });
+    }
+  );
+}
+
+export function insertIntoFetchAI(text) {
+  console.log("Attempting to insert text into FetchAI:", text);
+
+  // Candidate selectors that cover typical chat inputs (textarea, contenteditable, inputs, wrappers)
+  const selectors = [
+    "textarea[placeholder*='Message']",
+    "textarea[placeholder*='Type a message']",
+    "textarea[placeholder*='Write a message']",
+    "textarea[placeholder*='Send a message']",
+    "textarea[placeholder*='Ask']",
+    "textarea[aria-label*='message']",
+    "textarea[id*='input']",
+    "div.chat-input",
+    "div.composer",
+    "div[contenteditable='true']",
+    "div[role='textbox']",
+    "div.prose-editor",
+    "textarea",
+    "input[aria-label*='message']",
+    "form.chat-form textarea"
+  ];
+
+  console.log("Found textareas:", document.querySelectorAll("textarea").length);
+  console.log("Found contenteditables:", document.querySelectorAll("[contenteditable='true']").length);
+
+  let editor = null;
+  for (const selector of selectors) {
+    try {
+      editor = document.querySelector(selector);
+    } catch (e) {
+      // ignore invalid selectors for some browsers
+      editor = null;
+    }
+    console.log(`Trying FetchAI selector "${selector}":`, editor ? "Found!" : "Not found");
+    if (editor) break;
+  }
+
+  if (editor) {
+    console.log("Found FetchAI editor element:", editor.tagName, editor.className, editor.id);
+
+    try {
+      // TEXTAREA
+      if (editor.tagName === 'TEXTAREA') {
+        console.log("Handling TEXTAREA element");
+        // Set value using native setter so frameworks (React/Vue) notice
+        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+        if (nativeSetter) nativeSetter.call(editor, text);
+        else editor.value = text;
+
+        // Dispatch events
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.dispatchEvent(new InputEvent("input", { bubbles: true, data: text }));
+
+        editor.focus();
+        // Some editors require blur/focus sequence
+        setTimeout(() => { editor.blur(); editor.focus(); }, 50);
+      }
+      // contenteditable (rich editor)
+      else if (editor.contentEditable === 'true' || editor.getAttribute('contenteditable') === 'true') {
+        console.log("Handling contenteditable element");
+        // Clear and insert text
+        editor.innerHTML = "";
+        if (editor.classList.contains('ProseMirror') || editor.classList.contains('prosemirror')) {
+          const p = document.createElement('p');
+          p.textContent = text;
+          editor.appendChild(p);
+        } else {
+          editor.textContent = text;
+        }
+
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.focus();
+      }
+      // Generic INPUT
+      else if (editor.tagName === 'INPUT') {
+        console.log("Handling INPUT element");
+        const nativeInputSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+        if (nativeInputSetter) nativeInputSetter.call(editor, text);
+        else editor.value = text;
+
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.focus();
+      } else {
+        // Fallback: try setting textContent
+        console.log("Unknown editor type - falling back to textContent");
+        editor.textContent = text;
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+
+      console.log("Text inserted into FetchAI editor.");
+
+      // Attempt to find a send button and click it (non-blocking)
+      setTimeout(() => {
+        const sendSelectors = [
+          'button[aria-label*="Send"]',
+          'button[data-testid*="send"]',
+          'button[type="submit"]',
+          'button:contains("Send")', // may not work in browsers, kept for debugging
+          'button[class*="send"]',
+          'button[title*="Send"]',
+          'button[aria-label*="Submit"]',
+          'button[data-action*="send"]'
+        ];
+
+        let sendButton = null;
+        for (const s of sendSelectors) {
+          try {
+            sendButton = document.querySelector(s);
+          } catch (e) {
+            sendButton = null;
+          }
+          if (sendButton) break;
+        }
+
+        // If no button found, try searching for any button with SVG icon (common send icon)
+        if (!sendButton) {
+          const candidateButtons = Array.from(document.querySelectorAll('button'));
+          sendButton = candidateButtons.find(b => b.innerText.trim().toLowerCase() === 'send' || b.querySelector('svg'));
+        }
+
+        if (sendButton) {
+          console.log("Found potential FetchAI send button:", sendButton);
+          try {
+            sendButton.click();
+            console.log("Clicked send button.");
+          } catch (err) {
+            console.warn("Failed to click send button:", err);
+          }
+        } else {
+          console.log("No obvious send button found. Leaving text in editor for user to send manually.");
+        }
+      }, 400);
+
+    } catch (error) {
+      console.error("Error inserting text into FetchAI:", error);
+    }
+
+  } else {
+    console.log("FetchAI editor not found! Dumping available elements for debugging...");
+
+    console.log("All textareas:", Array.from(document.querySelectorAll("textarea")).map(t => ({
+      tag: t.tagName, id: t.id, className: t.className, placeholder: t.placeholder, ariaLabel: t.getAttribute('aria-label')
+    })));
+
+    console.log("All contenteditable elements:", Array.from(document.querySelectorAll("[contenteditable='true']")).map(t => ({
+      tag: t.tagName, id: t.id, className: t.className, role: t.getAttribute('role')
+    })));
+
+    // Retry after a delay — useful if the chat input mounts asynchronously
+    setTimeout(() => insertIntoFetchAI(text), 2000);
+  }
+}

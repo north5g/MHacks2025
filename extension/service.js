@@ -48,7 +48,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     console.log("Calling backend with selection:", selection);
     const rewritten = await helper.callBackend(selection);
     console.log("Backend response:", rewritten);
-    await helper.notify("Success!", "Prompt saved.");
     
     // Three states : pasting in 
     switch (target) {
