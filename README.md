@@ -18,6 +18,10 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
 
 ---
 
+## Demonstration Video
+
+---
+
 ## Features
 
 - **Highlight & Prompt**  
@@ -65,8 +69,8 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
 ### Installation
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/metaprompt.git
-   cd metaprompt
+   git clone https://github.com/north5g/MHacks2025
+   cd MHacks2025
    ```
 2. Set up the .env file in backend
     ```
