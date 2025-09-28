@@ -2,13 +2,8 @@
 
 ## Team
 - Cristian Dragoiu (dragoiuc@umich.edu)
-<<<<<<< HEAD
-- Ednilson Chiambo
 - George North (george.north.v@gmail.com)
-=======
 - Ednilson Chiambo (ednilsonc585@gmail.com)
-- George North
->>>>>>> dd234356313b0f576c733cf0afe64cd31929f845
 - Maverick Brazill (mbrazill@umich.edu)
 
 ## Track
