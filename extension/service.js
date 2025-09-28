@@ -49,12 +49,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const rewritten = await helper.callBackend(selection);
     console.log("Backend response:", rewritten);
     
-    // Three states : pasting in 
     switch (target) {
       case "build_prompt":
         await chrome.storage.local.set({ lastRewritten: rewritten });
         await helper.notify("Success!", "Prompt saved.");
 
+        // Open 'popup' window with response from Gemini so the user can copy to clipboard / review manually
         chrome.windows.create({
           url: chrome.runtime.getURL("frontend/popup.html"),
           type: "popup",
@@ -65,7 +65,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
         break;
       case "prompt_gpt":
-        
         console.log("Pasting to ChatGPT:", rewritten);
         helper.pasteChatGpt(rewritten);
         break;

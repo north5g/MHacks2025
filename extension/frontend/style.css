@@ -18,6 +18,7 @@
   --button-disabled-color: #2c3750;
 }
 
+
 /* Main CSS */
 body {
   font-family: Arial, sans-serif;
@@ -30,15 +31,17 @@ body {
   margin: 0;
 }
 
+
 .card {
   background-color: var(--color-secondary);
-  border-radius: 0;          /* remove rounded edges on the card */
+  border-radius: 0;
   padding: var(--padding);
-  width: 400px;              /* optional, keep if you want fixed width */
+  width: 400px;
   box-shadow: 0 4px var(--rounded-corner-radius) rgba(0,0,0,0.4);
 }
 
-/* Keep rounded corners for internal sections */
+
+/* Keep rounded corners for internal buttons on card */
 .response,
 .bottom-buttons button,
 .tag {
@@ -53,6 +56,7 @@ body {
   text-align: left;
 }
 
+
 .response {
   background-color: var(--color-tertiary);
   border-radius: var(--rounded-corner-radius);
@@ -60,16 +64,19 @@ body {
   margin-bottom: var(--item-spacing);
 }
 
+
 .response h3 {
   margin: 0 0 8px 0;
   font-size: 1rem;
 }
+
 
 .response p {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.4;
 }
+
 
 .response.scrollable {
   max-height: 200px;
@@ -78,15 +85,17 @@ body {
   scrollbar-width: thin;
 }
 
+
 .buttons,
-.bottom-buttons {
+.bottom-button {
   display: flex;
   gap: var(--padding);
   margin-top: var(--padding);
 }
 
+
 .buttons button,
-.bottom-buttons button {
+.bottom-button button {
   flex: 1;
   padding: var(--padding);
   border-radius: var(--rounded-corner-radius);
@@ -95,6 +104,7 @@ body {
   transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.15s ease-in-out;
 }
 
+
 /* Choice buttons */
 .choice-btn {
   background-color: transparent;
@@ -102,10 +112,12 @@ body {
   color: var(--text-color);
 }
 
+
 .choice-btn:hover {
   border-color: var(--response-not-selected-hover-color);
   transform: scale(0.95); /* shrink slightly on hover */
 }
+
 
 .choice-btn.active {
   background-color: var(--response-selected-color);
@@ -113,36 +125,42 @@ body {
   color: var(--text-color);
 }
 
+
 .choice-btn.active:hover {
   background-color: var(--response-selected-hover-color);
   border-color: var(--response-selected-hover-color);
   transform: scale(0.95); /* shrink slightly on hover */
 }
 
-.bottom-buttons button:enabled:hover {
+
+.bottom-button button:enabled:hover {
   color: #ffffff; 
   transform: scale(0.95); /* shrink slightly on hover */
 }
 
+
 /* Bottom buttons (enabled) */
-.bottom-buttons button {
+.bottom-button button {
   background-color: var(--button-enabled-color);
   border: none;
   color: var(--text-color);
   font-weight: bold;
 }
 
-.bottom-buttons button:hover:enabled {
+
+.bottom-button button:hover:enabled {
   background-color: var(--button-hover-color);
 }
 
+
 /* Disabled bottom buttons */
-.bottom-buttons button:disabled {
+.bottom-button button:disabled {
   background-color: var(--button-disabled-color);
   color: #9ca3af;
   cursor: not-allowed;
   opacity: 0.5;
 }
+
 
 /* Tag styling */
 #tags-container {
@@ -151,6 +169,7 @@ body {
   gap: 6px;                     /* spacing between tags */
   max-width: 100%;              /* ensures we stay within the card */
 }
+
 
 .tag {
   display: inline-block;
@@ -162,6 +181,7 @@ body {
   border-radius: var(--rounded-corner-radius);
   font-size: 0.8rem;
 }
+
 
 /* Remove button inside tag */
 .tag .remove-tag {
@@ -177,6 +197,7 @@ body {
   line-height: 1;
   padding: 0;
 }
+
 
 .tag .remove-tag:hover {
   color: #ffffff; /* brighten a smigdge on hover */

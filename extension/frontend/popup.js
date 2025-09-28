@@ -1,3 +1,4 @@
+// Wait until document it fully loaded before trying to fetch local storage, not waiting can cause it to return nil
 document.addEventListener("DOMContentLoaded", () => {
   const responseText = document.getElementById("responseText");
   const copyBtn = document.getElementById("copyBtn");
