@@ -178,6 +178,12 @@ async def rewrite(req: RewriteReq):
     # if len(rewritten) > 12000:
     #     rewritten = rewritten[:12000].rstrip + "..."
 
+    # print("\n")
+    # print(req)
+    # print("\n")
+    # print(rewritten)
+    # print("\n")
+
     return RewriteResp(rewritten=rewritten)
 
 

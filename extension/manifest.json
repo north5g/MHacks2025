@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Rewrite",
-  "version": 0.1,
+  "version": "0.1.0",
   "description": "Automatic prompt engineering and analysis for AI tasks.",
   "permissions": [
     "contextMenus",
@@ -18,10 +18,7 @@
     "https://gemini.google.com/*"
   ],
   "background": {
-    "service_worker": "service_worker.js"
-  },
-  "action": {
-    "default_popup": "preview.html"
-  },
-  "options_page": "options.html"
+    "service_worker": "service.js",
+    "type": "module"
+  }
 }

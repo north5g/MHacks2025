@@ -1,5 +1,7 @@
-async function callBackend(text, preset) {
-  const { endpoint } = await chrome.storage.sync.get({ endpoint: DEFAULT_ENDPOINT });
+const FALLBACK_ENDPOINT = "http://127.0.0.1:8000/rewrite";
+
+export async function callBackend(text, preset) {
+  const { endpoint } = await chrome.storage.sync.get({ endpoint: FALLBACK_ENDPOINT });
   const res = await fetch (endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -13,7 +15,7 @@ async function callBackend(text, preset) {
   return json.rewritten;
 }
 
-function notify(title, message) {
+export function notify(title, message) {
   return new Promise((resolve) => {
     chrome.notifications?.create(
       {
@@ -28,7 +30,7 @@ function notify(title, message) {
 }
 
 
-function pasteChatGpt(text) {
+export function pasteChatGpt(text) {
   chrome.tabs.create(
     {
       url: "https://chat.openai.com/",
@@ -44,7 +46,7 @@ function pasteChatGpt(text) {
   );
 }
 
-function insertIntoChatGpt(text) {
+export function insertIntoChatGpt(text) {
   const editor = document.querySelector("textarea#prompt-textarea");
   if (editor) {
     editor.value = text;
@@ -55,7 +57,7 @@ function insertIntoChatGpt(text) {
   }
 }
 
-function pasteGemini(text) {
+export function pasteGemini(text) {
   chrome.tabs.create(
     {
       url: "https://gemini.google.com/",
@@ -71,7 +73,7 @@ function pasteGemini(text) {
   );
 }
 
-function insertIntoGemini(text) {
+export function insertIntoGemini(text) {
     const editor = document.querySelector("rich-textarea");
     if (editor) {
         // Replace its contents

@@ -1,3 +1,5 @@
+import * as helper from "./helper.js";
+
 const OPTIONS = [
   { id: "build_prompt", title: "Build Prompt", preset: "polish" },
   { id: "prompt_gpt", title: "Prompt ChatGPT", preset: "polish" },
@@ -39,21 +41,22 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (!preset) return; // not a rewrite item
 
   try {
-    const rewritten = await callBackend(selection, preset);
+    const rewritten = await helper.callBackend(selection, preset);
     // ToDo : parse rewritten json for result text
     
     // Three states : pasting in 
     switch (target) {
       case "build_prompt":
+        console.log(rewritten)
         navigator.clipboard.writeText(rewritten).then(() => {
-          Notify("Success!", "Prompt copied to clipboard.");
+          helper.notify("Success!", "Prompt copied to clipboard.");
         });
         break;
       case "prompt_gpt":
-        pasteChatGpt(rewritten);
+        helper.pasteChatGpt(rewritten);
         break;
       case "prompt_gemini":
-        pasteGemini(rewritten);
+        helper.pasteGemini(rewritten);
         break;
       default:
         throw new Error("invalid target id");
@@ -61,7 +64,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
   catch (err) {
     console.error(err);
-    await notify("ToDo", `Error: ${String(err.message || err)}`);
+    await helper.notify("ToDo", `Error: ${String(err.message || err)}`);
   }
 });
 
