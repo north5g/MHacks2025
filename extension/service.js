@@ -26,6 +26,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const target = info.menuItemId;
+  console.log("Context menu clicked:", target, "Selected text:", info.selectionText);
+  
   if (!tab?.id) return;
   
   if (target === "settings") {
@@ -34,14 +36,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
   
   const selection = (info.selectionText || "").trim();
-  if (!selection) return;
+  if (!selection) {
+    console.log("No text selected");
+    return;
+  }
 
   const preset = OPTIONS.find(p => p.id === target)?.preset;
   if (!preset) return; // not a rewrite item
 
   try {
+    console.log("Calling backend with selection:", selection);
     const rewritten = await helper.callBackend(selection, preset);
-    // ToDo : parse rewritten json for result text
+    console.log("Backend response:", rewritten);
     
     // Three states : pasting in 
     switch (target) {
@@ -50,9 +56,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         await helper.notify("Success!", "Prompt saved.");
         break;
       case "prompt_gpt":
+        console.log("Pasting to ChatGPT:", rewritten);
         helper.pasteChatGpt(rewritten);
         break;
       case "prompt_gemini":
+        console.log("Pasting to Gemini:", rewritten);
         helper.pasteGemini(rewritten);
         break;
       default:
@@ -60,8 +68,20 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
   }
   catch (err) {
-    console.error(err);
-    await helper.notify("ToDo", `Error: ${String(err.message || err)}`);
+    console.error("Backend error:", err);
+    
+    // Fallback: if backend fails, send original text directly to ChatGPT/Gemini
+    if (target === "prompt_gpt") {
+      console.log("Backend failed, sending original text to ChatGPT");
+      helper.pasteChatGpt(selection);
+      await helper.notify("Backend Offline", "Sent original text to ChatGPT (backend unavailable)");
+    } else if (target === "prompt_gemini") {
+      console.log("Backend failed, sending original text to Gemini");
+      helper.pasteGemini(selection);
+      await helper.notify("Backend Offline", "Sent original text to Gemini (backend unavailable)");
+    } else {
+      await helper.notify("Error", `Backend error: ${String(err.message || err)}`);
+    }
   }
 });
 
