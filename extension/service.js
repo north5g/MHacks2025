@@ -6,7 +6,7 @@ const OPTIONS = [
   { id: "prompt_gemini", title: "Prompt Gemini", preset: "polish" },
   { id: "prompt_claude", title: "Prompt Claude", preset: "polish" },
   { id: "prompt_fetch", title: "Prompt Fetch.ai", preset: "polish" },
-  { id: "settings", title: "Settings" },
+  { id: "settings", title: "Prompt Settings" },
 ];
 
 const DEFAULT_ENDPOINT = "http://127.0.0.1:8000/rewrite"; // FastAPI endpoint
@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     chrome.contextMenus.create({
       id: item.id,
       title: item.title,
-      contexts: (item.id === "settings") ? ["page"] : ["selection"]
+      contexts: (item.id === "settings") ? ["page", "selection"] : ["selection"]
     });
   }
 
