@@ -258,14 +258,15 @@ export function insertIntoGemini(text) {
   
   // Selectors for current Gemini interface
   const selectors = [
-    "rich-textarea", // Primary Gemini input
+    "div.ql-editor", // Quill editor
+    "div.ql-editor[contenteditable='true']", // Quill editor v2
+    // "rich-textarea", // Primary Gemini input
     "textarea[aria-label*='Enter a prompt']", // Accessibility label
     "textarea[placeholder*='Enter a prompt']", // Placeholder text
     "[data-testid='composer-input']", // Possible test ID
     "[data-testid='message-input']", // Alternative test ID
     "div[contenteditable='true']", // Rich text editor
     "textarea", // Generic fallback
-    "div.ql-editor", // Quill editor
     "div[role='textbox']", // Accessibility role
     "textarea[placeholder*='prompt']" // Lowercase prompt
   ];
