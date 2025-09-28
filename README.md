@@ -2,7 +2,7 @@
 
 ## Team
 - Cristian Dragoiu (dragoiuc@umich.edu)
-- Ednilson Chiambo
+- Ednilson Chiambo (ednilsonc585@gmail.com)
 - George North
 - Maverick Brazill (mbrazill@umich.edu)
 
