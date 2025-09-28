@@ -49,9 +49,9 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
 ---
 
 ## Tech Stack
-- **Frontend:** Browser Extension (Manifest V3)  
-- **Backend:** Powered by Gemini API for prompt optimization  
-- **Platforms:** ChatGPT, Gemini, Claude integrations  
+- **Frontend:** Browser Extension (Manifest V3), HTML, CSS, JavaScript
+- **Backend:** Powered by Gemini API for prompt optimization, Python for local server  
+- **Platform Integrations:** ChatGPT, Gemini, Claude  
 
 ---
 
