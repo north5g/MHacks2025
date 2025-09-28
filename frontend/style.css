@@ -1,0 +1,131 @@
+:root {
+  --padding: 16px;
+  --item-spacing: 32px;
+  --rounded-corner-radius: 16px;
+
+  /* Core Colors */
+  --color-primary: #0d1117;
+  --color-secondary: #161b22;
+  --color-tertiary: #1B263B;
+  --text-color: #e6edf3;
+
+  /* Accent Colors */
+  --response-selected-color: #3554a9;
+  --response-not-selected-hover-color: var(--response-selected-color);
+  --response-selected-hover-color: #4a69d1;
+  --button-enabled-color: var(--color-tertiary);
+  --button-hover-color: #1B263B;
+  --button-disabled-color: #2c3750;
+}
+
+/* Main CSS */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--color-primary);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.card {
+  background-color: var(--color-secondary);
+  border-radius: var(--rounded-corner-radius);
+  padding: var(--padding);
+  width: 400px;
+  box-shadow: 0 4px var(--rounded-corner-radius) rgba(0,0,0,0.4);
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: var(--padding);
+  text-align: left;
+}
+
+.response {
+  background-color: var(--color-tertiary);
+  border-radius: var(--rounded-corner-radius);
+  padding: var(--padding);
+  margin-bottom: var(--item-spacing);
+}
+
+.response h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.response p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.buttons,
+.bottom-buttons {
+  display: flex;
+  gap: var(--padding);
+  margin-top: var(--padding);
+}
+
+.buttons button,
+.bottom-buttons button {
+  flex: 1;
+  padding: var(--padding);
+  border-radius: var(--rounded-corner-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* Choice buttons */
+.choice-btn {
+  background-color: transparent;
+  border: 2px solid #555;
+  color: var(--text-color);
+}
+
+.choice-btn:hover {
+  border-color: var(--response-not-selected-hover-color);
+}
+
+.choice-btn.active {
+  background-color: var(--response-selected-color);
+  border-color: var(--response-selected-color);
+  color: var(--text-color);
+}
+
+.choice-btn.active:hover {
+  background-color: var(--response-selected-hover-color);
+  border-color: var(--response-selected-hover-color);
+}
+
+/* Enabled bottom button hover (already has a hover, but let's make it more distinct) */
+
+ .bottom-buttons button:enabled:hover {
+  color: #ffffff; /* optional, ensures text stays readable */
+ }
+
+
+/* Bottom buttons (enabled) */
+.bottom-buttons button {
+  background-color: var(--button-enabled-color);
+  border: none;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.bottom-buttons button:hover:enabled {
+  background-color: var(--button-hover-color);
+}
+
+/* Disabled bottom buttons */
+.bottom-buttons button:disabled {
+  background-color: var(--button-disabled-color);
+  color: #9ca3af; /* soft gray text */
+  cursor: not-allowed;
+  opacity: 0.5;
+}
