@@ -3,7 +3,7 @@
 ## Team
 - Cristian Dragoiu (dragoiuc@umich.edu)
 - Ednilson Chiambo
-- George North
+- George North (george.north.v@gmail.com)
 - Maverick Brazill (mbrazill@umich.edu)
 
 ## Track
