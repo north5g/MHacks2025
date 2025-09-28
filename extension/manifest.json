@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AI Rewrite",
+  "name": "Meta-Prompt",
   "version": "0.1.0",
   "description": "Automatic prompt engineering and analysis for AI tasks.",
   "permissions": [

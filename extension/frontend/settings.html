@@ -9,9 +9,9 @@
     <div class="card" style="position: relative;">
 
         <!-- Logo top-right -->
-        <img src="logo.png" alt="Logo" style="position: absolute; top: 16px; right: 16px; width: 40px; height: 40px;">
+        <img src="../assets/icon128.png" alt="Logo" style="position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 35%; object-fit: cover;">
 
-        <div class="title">NAME Settings</div>
+        <div class="title">Meta-Prompt Settings</div>
 
         <!-- Two-column layout -->
         <div style="display: flex; gap: 32px; align-items: flex-start;">
@@ -19,17 +19,17 @@
         <div style="display: flex; gap: 16px; align-items: flex-start;">
         <!-- Tone Section -->
         <div class="response" style="flex: 1; padding: 16px;">
-            <h3>Tone</h3>
+            <h3>Prompt Type</h3>
             <div class="buttons" id="tone-buttons" style="flex-direction: column; gap: 8px;">
-                <button class="choice-btn" data-tone="professional">Professional</button>
-                <button class="choice-btn" data-tone="casual">Casual</button>
-                <button class="choice-btn" data-tone="inspirational">Inspirational</button>
+                <button class="choice-btn" data-tone="academic">Academic</button>
+                <button class="choice-btn" data-tone="exploratory">Exploratory</button>
+                <button class="choice-btn" data-tone="technical">Technical</button>
             </div>
         </div>
 
         <!-- Tags Section -->
         <div class="response" style="flex: 1; padding: 16px; margin-top: 32px;">
-            <h3>Tags</h3>
+            <h3>Additional Prompt Tags</h3>
             <div id="tags-container" class="buttons"></div>
             <div class="bottom-buttons" style="flex-direction: column; gap: 4px;">
                 <div style="display: flex; gap: 4px; width: 100%;">
