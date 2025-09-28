@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card" style="position: relative;">
+
+        <!-- Logo top-right -->
+        <img src="logo.png" alt="Logo" style="position: absolute; top: 16px; right: 16px; width: 40px; height: 40px;">
+
+        <div class="title">NAME Settings</div>
+
+        <!-- Two-column layout -->
+        <div style="display: flex; gap: 32px; align-items: flex-start;">
+
+        <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <!-- Tone Section -->
+        <div class="response" style="flex: 1; padding: 16px;">
+            <h3>Tone</h3>
+            <div class="buttons" id="tone-buttons" style="flex-direction: column; gap: 8px;">
+                <button class="choice-btn" data-tone="professional">Professional</button>
+                <button class="choice-btn" data-tone="casual">Casual</button>
+                <button class="choice-btn" data-tone="inspirational">Inspirational</button>
+            </div>
+        </div>
+
+        <!-- Tags Section -->
+        <div class="response" style="flex: 1; padding: 16px; margin-top: 32px;">
+            <h3>Tags</h3>
+            <div id="tags-container" class="buttons"></div>
+            <div class="bottom-buttons" style="flex-direction: column; gap: 4px;">
+                <div style="display: flex; gap: 4px; width: 100%;">
+                    <input type="text" id="new-tag-input" placeholder="Add a tag..." 
+                        style="flex: 0 0 50%; padding: 8px; border-radius: var(--rounded-corner-radius); border: 1px solid #555; background-color: var(--color-secondary); color: var(--text-color);">
+                    <button id="add-tag-btn" style="flex: 0 0 auto;">+</button>
+                </div>
+                <div style="font-size: 0.7rem; color: #aaa; margin-top: 6px;">
+                    Max Chars: <span id="max-chars-text"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+
+        <!-- Save Settings Button -->
+        <div class="bottom-buttons" style="margin-top: 32px;">
+            <button id="save-settings-btn">Save Settings</button>
+        </div>
+    </div>
+
+    <script>
+        // Tone button toggle
+        const toneButtons = document.querySelectorAll('#tone-buttons .choice-btn');
+        toneButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toneButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                console.log('Selected Tone:', btn.dataset.tone);
+            });
+        });
+
+        // Tag management
+        const tagsContainer = document.getElementById('tags-container');
+        const addTagBtn = document.getElementById('add-tag-btn');
+        const newTagInput = document.getElementById('new-tag-input');
+
+        const MAX_TAG_LENGTH = 20;
+        document.getElementById('max-chars-text').textContent = MAX_TAG_LENGTH;
+
+        function createTagElement(tagText) {
+            if(tagText.length > MAX_TAG_LENGTH) {
+                tagText = tagText.substring(0, MAX_TAG_LENGTH) + '…';
+            }
+
+            const span = document.createElement('span');
+            span.classList.add('tag');
+
+            const textSpan = document.createElement('span');
+            textSpan.classList.add('tag-text');
+            textSpan.textContent = tagText;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.classList.add('remove-tag');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.addEventListener('click', () => {
+                tagsContainer.removeChild(span);
+            });
+
+            span.appendChild(textSpan);
+            span.appendChild(removeBtn);
+            return span;
+        }
+
+        // Limit typing in input when we hit MAX_TAG_LENGTH
+        newTagInput.addEventListener('input', () => {
+            if(newTagInput.value.length > MAX_TAG_LENGTH) {
+                newTagInput.value = newTagInput.value.substring(0, MAX_TAG_LENGTH);
+            }
+        });
+
+        addTagBtn.addEventListener('click', () => {
+            const tagText = newTagInput.value.trim();
+            if(tagText) {
+                tagsContainer.appendChild(createTagElement(tagText));
+                newTagInput.value = '';
+            }
+        });
+
+        // 'Enter' key support for 'Add a tag'
+        newTagInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') addTagBtn.click();
+        });
+
+        function addTag() {
+            const tagText = newTagInput.value.trim();
+            if(tagText) {
+                tagsContainer.appendChild(createTagElement(tagText));
+                newTagInput.value = '';
+            }
+        }
+
+        addTagBtn.addEventListener('click', addTag);
+        newTagInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') addTag();
+        });
+
+        // Save settings (log to console for now)
+        document.getElementById('save-settings-btn').addEventListener('click', () => {
+            const selectedTone = document.querySelector('#tone-buttons .choice-btn.active')?.dataset.tone || null;
+            const tags = Array.from(tagsContainer.querySelectorAll('.tag')).map(t => t.textContent.replace('×','').trim());
+            console.log('Settings Saved:', {tone: selectedTone, tags});
+        });
+    </script>
+</body>
+</html>
