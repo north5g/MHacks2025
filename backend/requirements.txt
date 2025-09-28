@@ -1,4 +1,4 @@
-flask
+fastapi
 uvicorn[standard]
 python-dotenv
 google-generativeai
