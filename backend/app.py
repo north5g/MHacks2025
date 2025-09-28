@@ -14,10 +14,8 @@ import google.generativeai as genai
 # Config & Secrects
 # -----------------------------------------
 
-
 # Load environvement variables to fetch API key
 load_dotenv()
-
 
 
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -97,8 +95,8 @@ def build_prompt(text: str, tone: Optional[str] = None, tags: Optional[List[str]
     style_description = "; ".join(instructions)
 
     system = (
-        f"You are a prompt engineer for Meta-Prompt. "
-        f"Your task is to transform the user's raw input into a clear and actionable AI instruction that asks the next AI agent to explain the context, provide reasoning, and deliver a helpful answer. "
+        "You are a prompt engineer for Meta-Prompt. "
+        "Your task is to transform the user's raw input into a clear and actionable AI instruction that asks the next AI agent to explain the context, provide reasoning, and deliver a helpful answer. "
         f"The rewritten prompt must follow this style: {style_description}. "
         "Do not simply paraphrase the input. "
         "Instead, reformulate it as a complete question or task for an AI assistant, ensuring it requests relevant context or explanation where needed. "
@@ -110,9 +108,6 @@ def build_prompt(text: str, tone: Optional[str] = None, tags: Optional[List[str]
 
     print('\n', f'sys: {system}', f'user: {user}', '\n')
     return [system, user]
-
-
-
 
 
 async def call_gemini_with_timeout(messages: List[str]) -> str:
@@ -160,7 +155,6 @@ async def rewrite(req: RewriteReq):
         raise HTTPException(status_code=502, detail="No response from model")
 
     return RewriteResp(rewritten=rewritten)
-
 
 
 # -----------------------------------------

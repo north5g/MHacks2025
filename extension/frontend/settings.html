@@ -8,42 +8,42 @@
 <body>
     <div class="card" style="position: relative;">
 
-        <!-- Logo top-right -->
+        <!--  Top-right Logo -->
         <img src="../assets/icon128.png" alt="Logo" style="position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 35%; object-fit: cover;">
 
         <div class="title">Meta-Prompt Settings</div>
 
         <!-- Two-column layout -->
         <div style="display: flex; gap: 32px; align-items: flex-start;">
-
         <div style="display: flex; gap: 16px; align-items: flex-start;">
-        <!-- Tone Section -->
-        <div class="response" style="flex: 1; padding: 16px;">
-            <h3>Prompt type</h3>
-            <div class="buttons" id="tone-buttons" style="flex-direction: column; gap: 8px;">
-                <button class="choice-btn" data-tone="academic">Academic</button>
-                <button class="choice-btn" data-tone="exploratory">Exploratory</button>
-                <button class="choice-btn" data-tone="technical">Technical</button>
-            </div>
-        </div>
 
-        <!-- Tags Section -->
-        <div class="response" style="flex: 1; padding: 16px; margin-top: 32px;">
-            <h3>Additional prompt tags</h3>
-            <div id="tags-container" class="buttons"></div>
-            <div class="bottom-buttons" style="flex-direction: column; gap: 4px;">
-                <div style="display: flex; gap: 4px; width: 100%;">
-                    <input type="text" id="new-tag-input" placeholder="Add a tag..." 
-                        style="flex: 0 0 50%; padding: 8px; border-radius: var(--rounded-corner-radius); border: 1px solid #555; background-color: var(--color-secondary); color: var(--text-color);">
-                    <button id="add-tag-btn" style="flex: 0 0 auto;">+</button>
-                </div>
-                <div style="font-size: 0.7rem; color: #aaa; margin-top: 6px;">
-                    Max tag characters: <span id="max-chars-text"></span>
+            <!-- Prompt Type Column -->
+            <div class="response" style="flex: 1; padding: 16px;">
+                <h3>Prompt type</h3>
+                <div class="buttons" id="tone-buttons" style="flex-direction: column; gap: 8px;">
+                    <button class="choice-btn" data-tone="academic">Academic</button>
+                    <button class="choice-btn" data-tone="exploratory">Exploratory</button>
+                    <button class="choice-btn" data-tone="technical">Technical</button>
                 </div>
             </div>
-        </div>
-    </div>
 
+            <!-- Additional Prompt Tags Column-->
+            <div class="response" style="flex: 1; padding: 16px; margin-top: 32px;">
+                <h3>Additional prompt tags</h3>
+                <div id="tags-container" class="buttons"></div>
+                <div class="bottom-buttons" style="flex-direction: column; gap: 4px;">
+                    <div style="display: flex; gap: 4px; width: 100%;">
+                        <input type="text" id="new-tag-input" placeholder="Add a tag..." 
+                            style="flex: 0 0 50%; padding: 8px; border-radius: var(--rounded-corner-radius); border: 1px solid #555; background-color: var(--color-secondary); color: var(--text-color);">
+                        <button id="add-tag-btn" style="flex: 0 0 auto;">+</button>
+                    </div>
+                    <div style="font-size: 0.7rem; color: #aaa; margin-top: 6px;">
+                        Max tag characters: <span id="max-chars-text"></span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
         </div>
         
     </div>

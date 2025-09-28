@@ -14,7 +14,7 @@ maxCharsText.textContent = MAX_TAG_LENGTH;
 // Helpers
 // -------------------------------
 async function saveSettings() {
-    // Tone
+    // Prompt Type (Tone)
     const selectedTone = document.querySelector('#tone-buttons .choice-btn.active')?.dataset.tone || '';
     await chrome.storage.local.set({ userTone: selectedTone });
 
