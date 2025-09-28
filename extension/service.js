@@ -46,17 +46,19 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     
     // Three states : pasting in 
     switch (target) {
-      case "build_prompt":
+      case "build_prompt":  
         console.log(rewritten)
         navigator.clipboard.writeText(rewritten).then(() => {
           helper.notify("Success!", "Prompt copied to clipboard.");
         });
         break;
       case "prompt_gpt":
-        helper.pasteChatGpt(rewritten);
+        const tabIdGPT = await helper.openTabAndWait("https://chatgpt.com/");
+        await helper.injectChatGpt(tabIdGPT, rewritten);
         break;
       case "prompt_gemini":
-        helper.pasteGemini(rewritten);
+        const tabIdGemini = await helper.openTabAndWait("https://gemini.google.com/app");
+        await helper.injectGemini(tabIdGemini, rewritten);
         break;
       default:
         throw new Error("invalid target id");
