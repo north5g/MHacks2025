@@ -49,40 +49,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# -----------------------------------------
-# Presets
-# -----------------------------------------
-PRESETS: Dict[str, str] = {
-    "polish": "polished, clear, concise, and professional",
-    "simplify": "simpler and easier to read while preserving meaning",
-    "bulletize": "bullet-point summary; concise, factual, and well-structured",
-    "formal": "formal and professional tone",
-    "casual": "friendly, approachable, and casual tone",
-    "brief": "as short as possible while preserving all key information"
-}
-
-
 # -----------------------------------------
 # Schemas (API contract)
 # -----------------------------------------
 """Single source of truth for what the extension
    must send and what the backend will return."""
 class RewriteReq(BaseModel):
-    text: constr(min_length=1, max_length=8000) = Field(
-        ..., description="Highlighted text to rewrite"
+    text: constr(min_length=1, max_length=8000)
+    tone: Optional[str] = Field(
+        default=None, description="User-selected tone (overrides preset if set)"
+    )
+    tags: Optional[List[str]] = Field(
+        default_factory=list, description="Optional tags influencing style or content"
     )
 
-    # Either choose a preset, OR provide a free-form style string. Both can be used
-    preset: Optional[str] = Field(
-        default="polish",
-        description=f"Optional preset style. One of: {', '.join(PRESETS.keys())}",
-    )
-
-    style: Optional[str] = Field(
-        default=None,
-        description=f"Optional free-form style (e.g., technical but friendly).",
-    )
 
 """ Contains the rewritten text. """
 class RewriteResp(BaseModel):
@@ -97,26 +77,42 @@ class PresetsResp(BaseModel):
 # -----------------------------------------
 # Helpers
 # -----------------------------------------
-def build_prompt(text: str, preset: Optional[str], style: Optional[str]) -> List[str]:
-    """Compose system + user prompts for Gemini."""
-    # Resolve style description
-    style_bits = []
-    if preset and preset in PRESETS:
-        style_bits.append(PRESETS[preset])
-    if style:
-        style_bits.append(style.strip())
+def build_prompt(text: str, tone: Optional[str] = None, tags: Optional[List[str]] = None) -> List[str]:
+    """
+    Builds a high-quality system + user prompt that converts arbitrary plaintext
+    into a polished AI prompt suitable for downstream models, without adding formatting, explanations, or summaries.
+    """
+    instructions = []
+
+    # Tone
+    if tone:
+        instructions.append(f"Tone: {tone.strip()}")
+
+    # Tags / context
+    if tags:
+        instructions.append("Include contextual information based on these tags: " + ", ".join(tags))
     
-    # Fallback if nothing was provided
-    effective_style = ", ".join(style_bits) if style_bits else PRESETS["polish"]
+    # instructions.append("Tone: clear, concise, professional")
+
+    style_description = "; ".join(instructions)
 
     system = (
-        "You rewrite the user's text to be {style}. "
-        "Do not change the underlying meaning or add new facts. "
-        "Preserve inline formatting (lists, line breaks) when reasonable."
-    ).format(style=effective_style)
+        f"You are a prompt engineer for AI models. "
+        f"Your task is to take the user's raw plaintext and transform it into a high-quality AI prompt. "
+        f"{style_description}. "
+        "Do not add formatting, explanations, summaries, or extra text. "
+        "Do not invent information that is not present in the original text. "
+        "Simply rewrite the input into a polished prompt, no matter the tags or tone, that can be fed directly into another AI API."
+    )
 
-    user = f"Original:\n{text}\n\nRewrite:"
+    user = f"Original input:\n{text}\n\nTransform this into a polished AI prompt exactly as instructed:"
+
+    print('\n', f'sys: {system}', f'user: {user}', '\n')
     return [system, user]
+
+
+
+
 
 async def call_gemini_with_timeout(messages: List[str]) -> str:
     """
@@ -154,37 +150,16 @@ def healthz():
     return {"ok": True, "model": MODEL_NAME}
 
 
-@app.get("/presets", response_model=PresetsResp)
-def presets():
-    return {"presets": list(PRESETS.keys())}
-
-
 @app.post("/rewrite", response_model=RewriteResp)
 async def rewrite(req: RewriteReq):
-    """
-    Core endpoint:
-    - Validates input
-    - Wraps with a stable prompt
-    - Calls Gemini
-    - Returns the rewritten string
-    """
-    messages = build_prompt(req.text, req.preset, req.style)
+    messages = build_prompt(req.text, req.tone, req.tags)
     rewritten = await call_gemini_with_timeout(messages)
 
     if not rewritten:
-        raise HTTPException(status_code=502, detail="Empty response from model")
-    
-    # # Hard guard against extremely long outputs (protexts extension UX)
-    # if len(rewritten) > 12000:
-    #     rewritten = rewritten[:12000].rstrip + "..."
-
-    # print("\n")
-    # print(req)
-    # print("\n")
-    # print(rewritten)
-    # print("\n")
+        raise HTTPException(status_code=502, detail="No response from model")
 
     return RewriteResp(rewritten=rewritten)
+
 
 
 # -----------------------------------------

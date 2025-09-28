@@ -42,12 +42,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     return;
   }
 
-  const preset = OPTIONS.find(p => p.id === target)?.preset;
-  if (!preset) return; // not a rewrite item
-
   try {
     console.log("Calling backend with selection:", selection);
-    const rewritten = await helper.callBackend(selection, preset);
+    const rewritten = await helper.callBackend(selection);
     console.log("Backend response:", rewritten);
     
     // Three states : pasting in 
