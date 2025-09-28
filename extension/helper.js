@@ -376,3 +376,164 @@ export function insertIntoGemini(text) {
     setTimeout(() => insertIntoGemini(text), 2000);
   }
 }
+
+export function pasteClaude(text) {
+  console.log("pasteClaude called with text:", text);
+  
+  chrome.tabs.create(
+    {
+      url: "https://claude.ai/",
+      active: true
+    },
+    (newTab) => {
+      console.log("Claude tab created:", newTab.id);
+      
+      // Wait for the tab to finish loading before injecting the script
+      chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+        console.log("Claude tab update:", tabId, info.status);
+        
+        if (tabId === newTab.id && info.status === 'complete') {
+          chrome.tabs.onUpdated.removeListener(listener);
+          console.log("Claude tab loaded, injecting script in 1 second...");
+          
+          // Add a small additional delay to ensure Claude's components are ready
+          setTimeout(() => {
+            console.log("Executing script to insert text into Claude");
+            chrome.scripting.executeScript({
+              target: { tabId: newTab.id },
+              func: insertIntoClaude,
+              args: [text]
+            }).then(() => {
+              console.log("Claude script execution completed");
+            }).catch((err) => {
+              console.error("Claude script execution failed:", err);
+            });
+          }, 1000);
+        }
+      });
+    }
+  );
+}
+
+export function insertIntoClaude(text) {
+  console.log("Attempting to insert text into Claude:", text);
+  
+  // Updated selectors for current Claude interface (as of 2024)
+  const selectors = [
+    "textarea[placeholder*='Talk to Claude']", // Primary Claude input
+    "textarea[placeholder*='Message Claude']", // Alternative placeholder
+    "[data-testid='composer-input']", // Possible test ID
+    "[data-testid='message-input']", // Alternative test ID
+    "textarea[aria-label*='Message']", // Accessibility label
+    "div[contenteditable='true']", // Rich text editor
+    "textarea", // Generic fallback
+    "div.ProseMirror", // Rich text editor
+    "div[role='textbox']", // Accessibility role
+    "textarea[placeholder*='message']", // Lowercase message
+    "textarea[placeholder*='claude']" // Lowercase claude
+  ];
+  
+  console.log("Available textareas on Claude page:", document.querySelectorAll("textarea").length);
+  console.log("Available contenteditable divs:", document.querySelectorAll("div[contenteditable='true']").length);
+  
+  let editor = null;
+  for (const selector of selectors) {
+    editor = document.querySelector(selector);
+    console.log(`Trying Claude selector "${selector}":`, editor ? "Found!" : "Not found");
+    if (editor) break;
+  }
+  
+  if (editor) {
+    console.log("Found Claude editor element:", editor.tagName, editor.className, editor.id);
+    
+    try {
+      // For textarea elements
+      if (editor.tagName === 'TEXTAREA') {
+        console.log("Handling TEXTAREA element");
+        
+        // Method 1: Direct value assignment
+        editor.value = text;
+        
+        // Method 2: React synthetic events (Claude likely uses React)
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+        nativeInputValueSetter.call(editor, text);
+        
+        // Dispatch multiple events to ensure React picks up the change
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.dispatchEvent(new InputEvent("input", { bubbles: true, data: text }));
+        
+        // Focus and trigger additional events
+        editor.focus();
+        editor.blur();
+        editor.focus();
+      } 
+      // For contenteditable divs (rich text editors)
+      else if (editor.contentEditable === 'true' || editor.getAttribute('contenteditable') === 'true') {
+        console.log("Handling contenteditable element");
+        
+        // Clear existing content
+        editor.innerHTML = '';
+        
+        // Insert text
+        if (editor.classList.contains('ProseMirror')) {
+          // ProseMirror rich text editor
+          const p = document.createElement('p');
+          p.textContent = text;
+          editor.appendChild(p);
+        } else {
+          // Regular contenteditable
+          editor.textContent = text;
+        }
+        
+        // Dispatch events
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.focus();
+      }
+      // For input elements
+      else if (editor.tagName === 'INPUT') {
+        console.log("Handling INPUT element");
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeInputValueSetter.call(editor, text);
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+        editor.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.focus();
+      }
+      
+      console.log("Text successfully inserted into Claude!");
+      
+      // Try to find send button
+      setTimeout(() => {
+        const sendButton = document.querySelector('button[data-testid="send-button"]') || 
+                          document.querySelector('button[aria-label*="Send"]') ||
+                          document.querySelector('button:has(svg)') ||
+                          document.querySelector('button[type="submit"]') ||
+                          document.querySelector('button[title*="Send"]');
+        if (sendButton) {
+          console.log("Found potential Claude send button:", sendButton);
+        }
+      }, 500);
+      
+    } catch (error) {
+      console.error("Error inserting text into Claude:", error);
+    }
+  } else {
+    console.log("Claude editor not found! Available elements:");
+    console.log("All textareas:", Array.from(document.querySelectorAll("textarea")).map(t => ({
+      tag: t.tagName,
+      id: t.id,
+      className: t.className,
+      placeholder: t.placeholder,
+      ariaLabel: t.getAttribute('aria-label')
+    })));
+    console.log("All contenteditable:", Array.from(document.querySelectorAll("[contenteditable='true']")).map(t => ({
+      tag: t.tagName,
+      id: t.id,
+      className: t.className
+    })));
+    
+    // Retry after 2 seconds if not found
+    setTimeout(() => insertIntoClaude(text), 2000);
+  }
+}

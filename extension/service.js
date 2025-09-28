@@ -4,6 +4,7 @@ const OPTIONS = [
   { id: "build_prompt", title: "Build Prompt", preset: "polish" },
   { id: "prompt_gpt", title: "Prompt ChatGPT", preset: "polish" },
   { id: "prompt_gemini", title: "Prompt Gemini", preset: "polish" },
+  { id: "prompt_claude", title: "Prompt Claude", preset: "polish" },
   { id: "settings", title: "Settings" },
 ];
 
@@ -63,6 +64,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         console.log("Pasting to Gemini:", rewritten);
         helper.pasteGemini(rewritten);
         break;
+      case "prompt_claude":
+        console.log("Pasting to Claude:", rewritten);
+        helper.pasteClaude(rewritten);
+        break;
       default:
         throw new Error("invalid target id");
     }
@@ -70,7 +75,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   catch (err) {
     console.error("Backend error:", err);
     
-    // Fallback: if backend fails, send original text directly to ChatGPT/Gemini
+    // Fallback: if backend fails, send original text directly to ChatGPT/Gemini/Claude
     if (target === "prompt_gpt") {
       console.log("Backend failed, sending original text to ChatGPT");
       helper.pasteChatGpt(selection);
@@ -79,6 +84,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       console.log("Backend failed, sending original text to Gemini");
       helper.pasteGemini(selection);
       await helper.notify("Backend Offline", "Sent original text to Gemini (backend unavailable)");
+    } else if (target === "prompt_claude") {
+      console.log("Backend failed, sending original text to Claude");
+      helper.pasteClaude(selection);
+      await helper.notify("Backend Offline", "Sent original text to Claude (backend unavailable)");
     } else {
       await helper.notify("Error", `Backend error: ${String(err.message || err)}`);
     }

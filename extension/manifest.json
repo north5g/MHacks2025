@@ -16,7 +16,8 @@
     "http://localhost:8000/*",
     "https://chat.openai.com/*",
     "https://chatgpt.com/*",
-    "https://gemini.google.com/*"
+    "https://gemini.google.com/*",
+    "https://claude.ai/*"
   ],
   "background": {
     "service_worker": "service.js",
