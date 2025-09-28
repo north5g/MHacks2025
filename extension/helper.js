@@ -1,21 +1,3 @@
-// Three states : pasting in 
-switch (targetID) {
-    case "smart_rewrite":
-      insertIntoActiveElement(result);
-      break;
-    case "rewrite_chatgpt":
-      pasteChatGpt(prompt);
-      break;
-    case "rewrite_gemini":
-      pasteGemini(prompt);
-      break;
-    case "settings":
-      chrome.runtime.openOptionsPage();
-      return;
-    default:
-      return;
-  }
-
 function insertIntoActiveElement(text) {
   const el = document.activeElement;
   if (!el) {
@@ -35,3 +17,88 @@ function insertIntoActiveElement(text) {
   }
 }
 
+async function callBackend(text, preset) {
+  const { endpoint } = await chrome.storage.sync.get({ endpoint: DEFAULT_ENDPOINT });
+  const res = await fetch (endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, style: preset }) // matches FastAPI RewriteReq parameters
+  });
+  if (!res.ok){
+    const msg = await res.text().catch(() => String(res.status));
+    throw new Error(`Backend ${res.status}: ${msg}`);
+  }
+  const json = await res.json();
+  return json.rewritten;
+}
+
+function notify(title, message) {
+  return new Promise((resolve) => {
+    chrome.notifications?.create(
+      {
+        type: "basic",
+        iconUrl: "icon128.png",
+        title,
+        message
+      },
+      resolve
+    );
+  });
+}
+
+function pasteChatGpt(text) {
+  chrome.tabs.create(
+    {
+      url: "https://chat.openai.com/",
+      active: true
+    },
+    (newTab) => {
+      chrome.scripting.executeScript({
+        target: { tabId: newTab.id },
+        func: insertIntoChatGpt,
+        args: [text]
+      });
+    }
+  );
+}
+
+function insertIntoChatGpt(text) {
+  const editor = document.querySelector("textarea#prompt-textarea");
+  if (editor) {
+    editor.value = text;
+
+    editor.dispatchEvent(new Event("input", { bubbles: true }));
+  } else {
+    console.log("ChatGPT editor not found!");
+  }
+}
+
+function pasteGemini(text) {
+  chrome.tabs.create(
+    {
+      url: "https://gemini.google.com/",
+      active: true
+    },
+    (newTab) => {
+      chrome.scripting.executeScript({
+        target: { tabId: newTab.id },
+        function: insertIntoGemini,
+        args: [text]
+      });
+    }
+  );
+}
+
+function insertIntoGemini(text) {
+    const editor = document.querySelector("rich-textarea");
+    if (editor) {
+        // Replace its contents
+        editor.value = text;
+
+        // Make sure React knows it changed
+        const inputEvent = new Event("input", { bubbles: true });
+        editor.dispatchEvent(inputEvent);
+    } else{
+        console.log("Gemini editor not found!");
+    }
+}
