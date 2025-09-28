@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, constr
-from google import genai
+import google.generativeai as genai
 
 
 # -----------------------------------------
@@ -18,8 +18,7 @@ from google import genai
 # Load environvement variables to fetch API key
 load_dotenv()
 
-# The client gets the API key from the environment variable `GEMINI_API_KEY`.
-client = genai.Client()
+
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
@@ -36,21 +35,15 @@ ALLOWED_ORIGINS = [
 
 genai.configure(api_key=API_KEY)
 
-"""Potentially worth removing, kept around for reference."""
-# response = client.models.generate_content(
-#     model="gemini-2.5-flash", contents="Explain how AI works in a few words" #TODO replace this with the correct prompt
-# )
-# print(response.text)
-
 # -----------------------------------------
 # FastAPI Logic
 # -----------------------------------------
 
 app = FastAPI(title="MHacks2025", version="0.1")
 
-app.middleware(
+app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS if ALLOWED_ORIGINS != ["*"] else ["*"]
+    allow_origins=ALLOWED_ORIGINS if ALLOWED_ORIGINS != ["*"] else ["*"],
     allow_credentials=False,
     allow_methods=["POST", "GET", "OPTIONS"],
     allow_headers=["*"],
@@ -65,7 +58,7 @@ PRESETS: Dict[str, str] = {
     "simplify": "simpler and easier to read while preserving meaning",
     "bulletize": "bullet-point summary; concise, factual, and well-structured",
     "formal": "formal and professional tone",
-    "casual": "firnedl,y approachable, and casual tone",
+    "casual": "friendly, approachable, and casual tone",
     "brief": "as short as possible while preserving all key information"
 }
 
@@ -105,7 +98,7 @@ class PresetsResp(BaseModel):
 # Helpers
 # -----------------------------------------
 def build_prompt(text: str, preset: Optional[str], style: Optional[str]) -> List[str]:
-    """Compose system + user prompts for Gemini."""d
+    """Compose system + user prompts for Gemini."""
     # Resolve style description
     style_bits = []
     if preset and preset in PRESETS:
@@ -127,23 +120,23 @@ def build_prompt(text: str, preset: Optional[str], style: Optional[str]) -> List
 
 async def call_gemini_with_timeout(messages: List[str]) -> str:
     """
-    Call Gemini with the provided timeout and retrie count.
+    Call Gemini with the provided timeout and retry count.
     Uses asyncio.to_thread because the SDK call is synchronous.
     """
     async def once() -> str:
         def sync_call() -> str:
             model = genai.GenerativeModel(MODEL_NAME)
-            resp = mode.generate_content(messages)
+            resp = model.generate_content(messages)
             return (getattr(resp, "text", "") or "").strip()
 
         return await asyncio.to_thread(sync_call)
     
     last_err: Optional[Exception] = None
-    for attempt in range(1, MAX_RETRIES):
+    for attempt in range(1, MAX_RETRIES+1):
         try:
             return await asyncio.wait_for(once(), timeout=REQUEST_TIMEOUT_SECONDS)
         except Exception as e:
-            last_err = easier
+            last_err = e
             if attempt < MAX_RETRIES:
                 # jittered backoff to avoid throttling
                 await asyncio.sleep(0.4 + random.random() * 0.6)
