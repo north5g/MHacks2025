@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Re-Write UI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <div class="title">Re-Write with Prompt Engineering</div>
+
+    <div class="response">
+      <h3>Response 1</h3>
+      <p>
+        Write a complete program in {LANG} that allows a user to track daily habits. 
+        The program should include: 
+        Ability to add, remove, and edit habits.
+        Mark habits as completed each day…
+      </p>
+    </div>
+
+    <div class="response">
+      <h3>Response 2</h3>
+      <p>
+        Write a complete program in {LANG} that allows a user to track daily habits. 
+        The program should include:
+        Ability to add, remove, and edit habits.
+        Mark habits as completed each day…
+      </p>
+    </div>
+
+   <div class="buttons">
+      <button class="choice-btn" id="btn1">Response 1</button>
+      <button class="choice-btn" id="btn2">Response 2</button>
+    </div>
+
+    <div class="bottom-buttons">
+      <button id="replaceBtn" disabled>Replace Text</button>
+      <button id="copyBtn" disabled>Copy To Clipboard</button>
+    </div>
+  </div>
+
+  <script>
+    const choiceButtons = document.querySelectorAll(".choice-btn");
+    const replaceBtn = document.getElementById("replaceBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    choiceButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        choiceButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        replaceBtn.disabled = false;
+        copyBtn.disabled = false;
+      });
+    });
+
+    replaceBtn.addEventListener("click", () => {
+
+    });
+
+    copyBtn.addEventListener("click", () => {
+
+    });
+  </script>
+</body>
+</html>
