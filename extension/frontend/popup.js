@@ -14,8 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Copy button handler
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(responseText.textContent);
+copyBtn.addEventListener("click", () => {
+  navigator.clipboard.writeText(responseText.textContent).then(() => {
     window.close();
+  }).catch(err => {
+    console.error("Failed to copy text: ", err);
   });
+});
 });
