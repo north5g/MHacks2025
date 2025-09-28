@@ -97,15 +97,16 @@ def build_prompt(text: str, tone: Optional[str] = None, tags: Optional[List[str]
     style_description = "; ".join(instructions)
 
     system = (
-        f"You are a prompt engineer for AI models. "
-        f"Your task is to take the user's raw plaintext and transform it into a high-quality AI prompt. "
-        f"{style_description}. "
-        "Do not add formatting, explanations, summaries, or extra text. "
-        "Do not invent information that is not present in the original text. "
-        "Simply rewrite the input into a polished prompt, no matter the tags or tone, that can be fed directly into another AI API."
+        f"You are a prompt engineer for Meta-Prompt. "
+        f"Your task is to transform the user's raw input into a clear and actionable AI instruction that asks the next AI agent to explain the context, provide reasoning, and deliver a helpful answer. "
+        f"The rewritten prompt must follow this style: {style_description}. "
+        "Do not simply paraphrase the input. "
+        "Instead, reformulate it as a complete question or task for an AI assistant, ensuring it requests relevant context or explanation where needed. "
+        "Do not add extra information not present in the input. "
+        "Output only the rewritten instruction, as plain text, ready to be passed to another AI API. "
     )
 
-    user = f"Original input:\n{text}\n\nTransform this into a polished AI prompt exactly as instructed:"
+    user = f"Input:\n{text}\n"
 
     print('\n', f'sys: {system}', f'user: {user}', '\n')
     return [system, user]

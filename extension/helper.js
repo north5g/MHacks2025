@@ -98,7 +98,7 @@ export function pasteChatGpt(text) {
 export function insertIntoChatGpt(text) {
   console.log("Attempting to insert text into ChatGPT:", text);
   
-  // Updated selectors for current ChatGPT interface (as of 2024)
+  // Selectors for current ChatGPT interface
   const selectors = [
     "textarea[data-id='root']", // New ChatGPT selector
     "#prompt-textarea", // Primary textarea ID
@@ -132,10 +132,9 @@ export function insertIntoChatGpt(text) {
       if (editor.tagName === 'TEXTAREA') {
         console.log("Handling TEXTAREA element");
         
-        // Method 1: Direct value assignment
         editor.value = text;
         
-        // Method 2: React synthetic events (important for React apps)
+        
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         nativeInputValueSetter.call(editor, text);
         
@@ -144,7 +143,7 @@ export function insertIntoChatGpt(text) {
         editor.dispatchEvent(new Event("change", { bubbles: true }));
         editor.dispatchEvent(new InputEvent("input", { bubbles: true, data: text }));
         
-        // Focus and trigger additional events
+        
         editor.focus();
         editor.blur();
         editor.focus();
@@ -167,12 +166,12 @@ export function insertIntoChatGpt(text) {
           editor.textContent = text;
         }
         
-        // Dispatch events
+        
         editor.dispatchEvent(new Event("input", { bubbles: true }));
         editor.dispatchEvent(new Event("change", { bubbles: true }));
         editor.focus();
       }
-      // For input elements
+      
       else if (editor.tagName === 'INPUT') {
         console.log("Handling INPUT element");
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
@@ -257,7 +256,7 @@ export function pasteGemini(text) {
 export function insertIntoGemini(text) {
   console.log("Attempting to insert text into Gemini:", text);
   
-  // Updated selectors for current Gemini interface (as of 2024)
+  // Selectors for current Gemini interface
   const selectors = [
     "rich-textarea", // Primary Gemini input
     "textarea[aria-label*='Enter a prompt']", // Accessibility label
@@ -308,19 +307,15 @@ export function insertIntoGemini(text) {
       else if (editor.tagName === 'TEXTAREA') {
         console.log("Handling TEXTAREA element");
         
-        // Method 1: Direct value assignment
         editor.value = text;
         
-        // Method 2: React synthetic events (if Gemini uses React)
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         nativeInputValueSetter.call(editor, text);
         
-        // Dispatch multiple events
         editor.dispatchEvent(new Event("input", { bubbles: true }));
         editor.dispatchEvent(new Event("change", { bubbles: true }));
         editor.dispatchEvent(new InputEvent("input", { bubbles: true, data: text }));
         
-        // Focus management
         editor.focus();
         editor.blur();
         editor.focus();
@@ -440,7 +435,7 @@ export function pasteClaude(text) {
 export function insertIntoClaude(text) {
   console.log("Attempting to insert text into Claude:", text);
   
-  // Updated selectors for current Claude interface (as of 2024)
+  // Selectors for current Claude interface
   const selectors = [
     "textarea[placeholder*='Talk to Claude']", // Primary Claude input
     "textarea[placeholder*='Message Claude']", // Alternative placeholder
@@ -473,10 +468,8 @@ export function insertIntoClaude(text) {
       if (editor.tagName === 'TEXTAREA') {
         console.log("Handling TEXTAREA element");
         
-        // Method 1: Direct value assignment
         editor.value = text;
         
-        // Method 2: React synthetic events (Claude likely uses React)
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         nativeInputValueSetter.call(editor, text);
         
@@ -485,7 +478,6 @@ export function insertIntoClaude(text) {
         editor.dispatchEvent(new Event("change", { bubbles: true }));
         editor.dispatchEvent(new InputEvent("input", { bubbles: true, data: text }));
         
-        // Focus and trigger additional events
         editor.focus();
         editor.blur();
         editor.focus();
@@ -508,7 +500,6 @@ export function insertIntoClaude(text) {
           editor.textContent = text;
         }
         
-        // Dispatch events
         editor.dispatchEvent(new Event("input", { bubbles: true }));
         editor.dispatchEvent(new Event("change", { bubbles: true }));
         editor.focus();
