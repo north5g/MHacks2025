@@ -19,6 +19,7 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
 ---
 
 ## Video Demonstration
+https://www.youtube.com/watch?v=skhwH4JcHsk&feature=youtu.be
 
 ---
 
