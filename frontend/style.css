@@ -19,7 +19,6 @@
 }
 
 /* Main CSS */
-
 body {
   font-family: Arial, sans-serif;
   background-color: var(--color-primary);
@@ -103,10 +102,8 @@ body {
   border-color: var(--response-selected-hover-color);
 }
 
-/* Enabled bottom button hover (already has a hover, but let's make it more distinct) */
-
  .bottom-buttons button:enabled:hover {
-  color: #ffffff; /* optional, ensures text stays readable */
+  color: #ffffff; 
  }
 
 
@@ -125,7 +122,45 @@ body {
 /* Disabled bottom buttons */
 .bottom-buttons button:disabled {
   background-color: var(--button-disabled-color);
-  color: #9ca3af; /* soft gray text */
+  color: #9ca3af;
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Tag styling */
+#tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;                     /* spacing between tags */
+  max-width: 100%;              /* ensures we stay within the card */
+}
+
+.tag {
+  display: inline-block;
+  position: relative;
+  background-color: var(--response-selected-color);
+  color: var(--text-color);
+  padding: 6px 20px 6px 12px;                         /* right padding slightly larger to account for X */
+  margin: 6px;                                        /* more spacing between tags */
+  border-radius: var(--rounded-corner-radius);
+  font-size: 0.8rem;
+}
+
+/* Remove button inside tag */
+.tag .remove-tag {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+  font-size: 0.7rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.tag .remove-tag:hover {
+  color: #ffffff; /* brighten on hover */
 }
