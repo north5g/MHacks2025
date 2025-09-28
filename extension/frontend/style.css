@@ -32,11 +32,19 @@ body {
 
 .card {
   background-color: var(--color-secondary);
-  border-radius: var(--rounded-corner-radius);
+  border-radius: 0;          /* remove rounded edges on the card */
   padding: var(--padding);
-  width: 400px;
+  width: 400px;              /* optional, keep if you want fixed width */
   box-shadow: 0 4px var(--rounded-corner-radius) rgba(0,0,0,0.4);
 }
+
+/* Keep rounded corners for internal sections */
+.response,
+.bottom-buttons button,
+.tag {
+  border-radius: var(--rounded-corner-radius);
+}
+
 
 .title {
   font-size: 1.2rem;
