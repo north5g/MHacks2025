@@ -2,8 +2,13 @@
 
 ## Team
 - Cristian Dragoiu (dragoiuc@umich.edu)
+<<<<<<< HEAD
 - Ednilson Chiambo
 - George North (george.north.v@gmail.com)
+=======
+- Ednilson Chiambo (ednilsonc585@gmail.com)
+- George North
+>>>>>>> dd234356313b0f576c733cf0afe64cd31929f845
 - Maverick Brazill (mbrazill@umich.edu)
 
 ## Track
@@ -18,7 +23,7 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
 
 ---
 
-## Demonstration Video
+## Video Demonstration
 
 ---
 
@@ -40,22 +45,24 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
     - Open Gemini with your optimized prompt pre-filled.  
   - **Prompt Claude**  
     - Open Claude with your optimized prompt pre-filled.  
+  - **Prompt Fetch.ai**
+    - Open Fetch.ai with your optimized prompt pre-filled.
 
 ---
 
 ## Why MetaPrompt?
-- ⏱️ **Save Time** — Focus on building, not prompt tuning.  
-- 🎯 **Boost Quality** — Get stronger, more relevant AI responses.  
+- ⏱️ **Save Time** — Focus on learning, not building queries.  
+- 🎯 **Boost Quality** — Get stronger, more helpful AI responses.  
 - 🌐 **Seamless Integration** — Works directly in the browser.  
 - 🔀 **Cross-Platform** — Optimized for ChatGPT, Gemini, and Claude.
-- 💎 **Available to Prompt Anywhere** - Copy text to your clipboard for integration to your AI of choice.
+- 💎 **Available to Prompt Anywhere** - Copy text to your clipboard for integration to your LLM of choice.
 
 ---
 
 ## Tech Stack
 - **Frontend:** Browser Extension (Manifest V3), HTML, CSS, JavaScript
-- **Backend:** Powered by Gemini API for prompt optimization, Python for local server  
-- **Platform Integrations:** ChatGPT, Gemini, Claude  
+- **Backend:** Server Written with FastAPI, Pydantic, and Dotenv. Prompt Optimization Powered by Gemini API  
+- **Platform Integrations:** ChatGPT, Gemini, Claude, FetchAPI  
 
 ---
 
@@ -72,21 +79,21 @@ Crafting effective prompts for AI tools is a time-consuming process. Developers 
    git clone https://github.com/north5g/MHacks2025
    cd MHacks2025
    ```
-2. Set up the .env file in backend
+2. Set up the .env file in backend folder
     ```
     GEMINI_API_KEY=<YOUR API KEY>
     REQUEST_TIMEOUT_SECONDS=20
     MAX_RETRIES=2
     ALLOWED_ORIGINS=chrome-extension://<YOUR_EXTENSION_ID>
     ```
-3. Set up the venv
+3. move into backend folder if not there already
+    ```bash
+    cd backend
+    ```
+4. Set up the venv
     ```bash
     python3 -m venv .venv
     pip3 install -r requirements.txt
-    ```
-4. move into backend folder if not there already
-    ```bash
-    cd backend
     ```
 5.  Start the python server
     ```python
