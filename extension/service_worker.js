@@ -1,4 +1,11 @@
-const OPTIONS = ["option1", "option2"]; // example options
+const { option } = require("lightbox2");
+
+const OPTIONS = [
+  { id: "smart_rewrite", title: "Smart Rewrite" },
+  { id: "rewrite_chatgpt", title: "Rewrite for ChatGPT" },
+  { id: "rewrite_gemini", title: "Rewrite for Gemini" },
+  { id: "settings", title: "Settings" },
+];
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -6,11 +13,11 @@ chrome.runtime.onInstalled.addListener(() => {
     title: "AI Rewrite",
     contexts: ["selection"]
   });
-  OPTIONS.forEach(id => {
+  OPTIONS.forEach(option => {
     chrome.contextMenus.create({
-      id,
+      id: option.id,
       parentId: "smartrewrite_root",
-      title: id[0].toUpperCase() + id.slice(1),
+      title: option.title,
       contexts: ["selection"]
     });
   });
@@ -21,15 +28,19 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const target = info.menuItemId;
   if (!selection) return;
 
-  // get user settings (templates, apiKey, provider)
-  const cfg = await chrome.storage.sync.get({
-    provider: "gemini",
-    apiKey: process.env.GEMINI_API_KEY,
-    templates: {}
-  });
-
-  // build a prompt based on `target` and user templates
-  const prompt = buildPromptForTarget(selection, target, cfg.templates);
+  switch (targetID) {
+    case "smart_rewrite":
+      callLLM();
+      break;
+    case "rewrite_gemini":
+      prompt = `Rewrite the following text to be more suitable for input to Gemini AI:\n\n"${selection}"\n\nRewritten version:`;
+      break;
+    case "settings":
+      chrome.runtime.openOptionsPage();
+      return;
+    default:
+      return;
+  }
 
   // generate text (call to provider or local method)
   let result;
@@ -44,7 +55,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   await chrome.storage.session?.set?.({lastResult: result}) || chrome.storage.local.set({lastResult: result});
   chrome.windows.create({
     url: chrome.runtime.getURL("preview.html"),
-    type: "popup",
+    type: "panel",
     width: 600,
     height: 480
   });
