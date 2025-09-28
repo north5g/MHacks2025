@@ -4,10 +4,10 @@ switch (targetID) {
       insertIntoActiveElement(result);
       break;
     case "rewrite_chatgpt":
-      prompt = `Rewrite the following text to be more suitable for input to ChatGPT:\n\n"${selection}"\n\nRewritten version:`;
+      pasteChatGpt(prompt);
       break;
     case "rewrite_gemini":
-      prompt = `Rewrite the following text to be more suitable for input to Gemini AI:\n\n"${selection}"\n\nRewritten version:`;
+      pasteGemini(prompt);
       break;
     case "settings":
       chrome.runtime.openOptionsPage();
@@ -33,4 +33,61 @@ function insertIntoActiveElement(text) {
     navigator.clipboard.writeText(text);
     alert("Copied to clipboard.");
   }
+}
+
+function pasteChatGpt(text) {
+  chrome.tabs.create(
+    {
+      url: "https://chat.openai.com/",
+      active: true
+    },
+    (newTab) => {
+      chrome.scripting.executeScript({
+        target: { tabId: newTab.id },
+        func: insertIntoChatGpt,
+        args: [text]
+      });
+    }
+  );
+}
+
+function insertIntoChatGpt(text) {
+  const editor = document.querySelector("textarea#prompt-textarea");
+  if (editor) {
+    editor.value = text;
+
+    editor.dispatchEvent(new Event("input", { bubbles: true }));
+  } else {
+    console.log("ChatGPT editor not found!");
+  }
+}
+
+function pasteGemini(text) {
+  chrome.tabs.create(
+    {
+      url: "https://gemini.google.com/",
+      active: true
+    },
+    (newTab) => {
+      chrome.scripting.executeScript({
+        target: { tabId: newTab.id },
+        function: insertIntoGemini,
+        args: [text]
+      });
+    }
+  );
+}
+
+function insertIntoGemini(text) {
+    const editor = document.querySelector("rich-textarea");
+    if (editor) {
+        // Replace its contents
+        editor.value = text;
+
+        // Make sure React knows it changed
+        const inputEvent = new Event("input", { bubbles: true });
+        editor.dispatchEvent(inputEvent);
+    } else{
+        console.log("Gemini editor not found!");
+    }
 }
