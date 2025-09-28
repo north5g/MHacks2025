@@ -82,7 +82,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       case "prompt_fetch":
         console.log("Pasting to Fetch:", rewritten);
-        helper.pasteFetch(rewritten);
+        helper.pasteFetchAI(rewritten);
         break;
 
       default:
