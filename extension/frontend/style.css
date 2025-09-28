@@ -64,21 +64,11 @@ body {
 }
 
 .response.scrollable {
-  max-height: 150px;   /* set the cap you want */
-  overflow-y: auto;    /* enables vertical scroll if content exceeds */
-  padding-right: 8px;  /* so text doesn't collide with scrollbar */
-  scrollbar-width: thin; /* optional: slimmer scrollbar (Firefox) */
+  max-height: 200px;
+  overflow-y: auto;           /* enables vertical scroll */
+  padding-right: 8px;         /* scrollbar padding */
+  scrollbar-width: thin;
 }
-
-.response.scrollable::-webkit-scrollbar {
-  width: 6px; /* thinner scrollbar for Chrome */
-}
-
-.response.scrollable::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 8px;
-}
-
 
 .buttons,
 .bottom-buttons {
