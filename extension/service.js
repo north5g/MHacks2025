@@ -45,8 +45,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // Three states : pasting in 
     switch (target) {
       case "build_prompt":
-        copyClipboard(rewritten);
-        giveNotification();
+        navigator.clipboard.writeText(rewritten).then(() => {
+          Notify("Success!", "Prompt copied to clipboard.");
+        });
         break;
       case "prompt_gpt":
         pasteChatGpt(rewritten);

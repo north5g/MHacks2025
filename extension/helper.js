@@ -1,22 +1,3 @@
-function insertIntoActiveElement(text) {
-  const el = document.activeElement;
-  if (!el) {
-    // fallback: find first textarea/contenteditable
-    const t = document.querySelector('textarea, [contenteditable="true"]');
-    if (t) t.focus();
-  }
-  // For contenteditable
-  if (document.activeElement && document.activeElement.isContentEditable) {
-    document.activeElement.innerText = text;
-  } else if (document.activeElement && 'value' in document.activeElement) {
-    document.activeElement.value = text;
-  } else {
-    // last fallback: copy to clipboard and notify user
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard.");
-  }
-}
-
 async function callBackend(text, preset) {
   const { endpoint } = await chrome.storage.sync.get({ endpoint: DEFAULT_ENDPOINT });
   const res = await fetch (endpoint, {
@@ -37,7 +18,7 @@ function notify(title, message) {
     chrome.notifications?.create(
       {
         type: "basic",
-        iconUrl: "icon128.png",
+        iconUrl: "assets/icon128.png",
         title,
         message
       },
@@ -45,6 +26,7 @@ function notify(title, message) {
     );
   });
 }
+
 
 function pasteChatGpt(text) {
   chrome.tabs.create(
