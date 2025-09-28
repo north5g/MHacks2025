@@ -5,6 +5,7 @@ const OPTIONS = [
   { id: "prompt_gpt", title: "Prompt ChatGPT", preset: "polish" },
   { id: "prompt_gemini", title: "Prompt Gemini", preset: "polish" },
   { id: "prompt_claude", title: "Prompt Claude", preset: "polish" },
+  { id: "prompt_fetch", title: "Prompt Fetch.ai", preset: "polish" },
   { id: "settings", title: "Settings" },
 ];
 
@@ -77,6 +78,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       case "prompt_claude":
         console.log("Pasting to Claude:", rewritten);
         helper.pasteClaude(rewritten);
+        break;
+      case "prompt_fetch":
+        console.log("Pasting to Fetch:", rewritten);
+        helper.pasteFetch(rewritten);
         break;
       default:
         throw new Error("invalid target id");
