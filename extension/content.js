@@ -1,3 +1,21 @@
+// Three states : pasting in 
+switch (targetID) {
+    case "smart_rewrite":
+      insertIntoActiveElement(result);
+      break;
+    case "rewrite_chatgpt":
+      prompt = `Rewrite the following text to be more suitable for input to ChatGPT:\n\n"${selection}"\n\nRewritten version:`;
+      break;
+    case "rewrite_gemini":
+      prompt = `Rewrite the following text to be more suitable for input to Gemini AI:\n\n"${selection}"\n\nRewritten version:`;
+      break;
+    case "settings":
+      chrome.runtime.openOptionsPage();
+      return;
+    default:
+      return;
+  }
+
 function insertIntoActiveElement(text) {
   const el = document.activeElement;
   if (!el) {
