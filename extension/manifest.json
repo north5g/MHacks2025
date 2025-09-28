@@ -22,8 +22,7 @@
     "type": "module"
   },
   "action": {
-    "default_popup": "frontend/popup.html"
+    "default_popup": "frontend/settings.html"
   },
   "options_page": "frontend/settings.html"
-
 }
