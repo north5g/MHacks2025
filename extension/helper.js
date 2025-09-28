@@ -1,12 +1,28 @@
 const FALLBACK_ENDPOINT = "http://127.0.0.1:8000/rewrite";
 
-export async function callBackend(text, preset) {
+
+export async function callBackend(text) {
+  // Get endpoint from Chrome storage (fallback if not set)
   const { endpoint } = await chrome.storage.sync.get({ endpoint: FALLBACK_ENDPOINT });
+
+  // Get tone and tags from chrome.storage.local
+  const storageData = await chrome.storage.local.get(null);
+
+  const tone = storageData.userTone || null;
+
+  const tags = [];
+  const tagCount = parseInt(storageData.userTagCount || '0', 10);
+  for (let i = 0; i < tagCount; i++) {
+    const tag = storageData[`userTag_${i}`];
+    if (tag) tags.push(tag);
+  }
+
+  const payload = { text, tone, tags };
 
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, style: preset })
+    body: JSON.stringify(payload)
   });
 
   if (!res.ok) {
@@ -16,23 +32,29 @@ export async function callBackend(text, preset) {
 
   const { rewritten } = await res.json();
   if (!rewritten) throw new Error("Backend response missing `rewritten` field");
+
   return rewritten;
 }
 
 
 export function notify(title, message) {
   return new Promise((resolve) => {
-    chrome.notifications?.create(
-      {
-        type: "basic",
-        iconUrl: "assets/icon128.png",
-        title,
-        message
-      },
-      resolve
-    );
+    if (chrome.notifications && chrome.notifications.create) {
+      chrome.notifications.create(
+        {
+          type: "basic",
+          iconUrl: "assets/icon128.png",
+          title,
+          message
+        },
+        resolve
+      );
+    } else {
+      resolve(); // fallback
+    }
   });
 }
+
 
 
 export function pasteChatGpt(text) {
