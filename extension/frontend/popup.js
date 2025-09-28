@@ -15,5 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Copy button handler
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(responseText.textContent);
+    window.close();
   });
 });

@@ -44,9 +44,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   try {
+    await helper.notify("Hold on...", "We're processing your prompt now.")
     console.log("Calling backend with selection:", selection);
     const rewritten = await helper.callBackend(selection);
     console.log("Backend response:", rewritten);
+    await helper.notify("Success!", "Prompt saved.");
     
     // Three states : pasting in 
     switch (target) {
@@ -57,49 +59,56 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         chrome.windows.create({
           url: chrome.runtime.getURL("frontend/popup.html"),
           type: "popup",
-          width: 600,
-          height: 800,
+          width: 500,
+          height: 700,
           focused: true
         });
 
-
         break;
       case "prompt_gpt":
+        
         console.log("Pasting to ChatGPT:", rewritten);
         helper.pasteChatGpt(rewritten);
         break;
+
       case "prompt_gemini":
         console.log("Pasting to Gemini:", rewritten);
         helper.pasteGemini(rewritten);
         break;
+
       case "prompt_claude":
         console.log("Pasting to Claude:", rewritten);
         helper.pasteClaude(rewritten);
         break;
+
       case "prompt_fetch":
         console.log("Pasting to Fetch:", rewritten);
         helper.pasteFetch(rewritten);
         break;
+
       default:
+        await helper.notify("Sorry!", "Something went wrong. Try again!")
         throw new Error("invalid target id");
     }
   }
   catch (err) {
     console.error("Backend error:", err);
     
-    // Fallback: if backend fails, send original text directly to ChatGPT/Gemini/Claude
     if (target === "prompt_gpt") {
       console.log("Backend failed, sending original text to ChatGPT");
       helper.pasteChatGpt(selection);
       await helper.notify("Backend Offline", "Sent original text to ChatGPT (backend unavailable)");
+
     } else if (target === "prompt_gemini") {
       console.log("Backend failed, sending original text to Gemini");
       helper.pasteGemini(selection);
       await helper.notify("Backend Offline", "Sent original text to Gemini (backend unavailable)");
+
     } else if (target === "prompt_claude") {
       console.log("Backend failed, sending original text to Claude");
       helper.pasteClaude(selection);
       await helper.notify("Backend Offline", "Sent original text to Claude (backend unavailable)");
+
     } else {
       await helper.notify("Error", `Backend error: ${String(err.message || err)}`);
     }

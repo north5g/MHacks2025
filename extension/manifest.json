@@ -17,7 +17,8 @@
     "https://chat.openai.com/*",
     "https://chatgpt.com/*",
     "https://gemini.google.com/*",
-    "https://claude.ai/*"
+    "https://claude.ai/*",
+    "https://asi1.ai/"
   ],
   "background": {
     "service_worker": "service.js",
